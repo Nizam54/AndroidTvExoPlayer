@@ -18,19 +18,23 @@ package cs.nzm.atvexo.player;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Handler;
+import android.widget.Toast;
+
 import androidx.leanback.media.PlaybackTransportControlGlue;
 import androidx.leanback.media.PlayerAdapter;
 import androidx.leanback.widget.Action;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.PlaybackControlsRow;
-import android.widget.Toast;
 
 /**
  * PlayerGlue for video playback
+ *
  * @param <T>
  */
 public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTransportControlGlue<T> {
 
+    private PlaybackControlsRow.FastForwardAction forwardAction;
+    private PlaybackControlsRow.RewindAction rewindAction;
     private PlaybackControlsRow.PictureInPictureAction mPipAction;
     private PlaybackControlsRow.MoreActions mQualityAction;
     private ExoPlayerAdapter adapter;
@@ -38,6 +42,8 @@ public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTrans
     public VideoMediaPlayerGlue(Activity context, T impl) {
         super(context, impl);
         adapter = (ExoPlayerAdapter) impl;
+        forwardAction = new PlaybackControlsRow.FastForwardAction(context);
+        rewindAction = new PlaybackControlsRow.RewindAction(context);
         mQualityAction = new PlaybackControlsRow.MoreActions(context);
         mPipAction = new PlaybackControlsRow.PictureInPictureAction(context);
     }
@@ -52,7 +58,9 @@ public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTrans
 
     @Override
     protected void onCreatePrimaryActions(ArrayObjectAdapter adapter) {
+        adapter.add(rewindAction);
         super.onCreatePrimaryActions(adapter);
+        adapter.add(forwardAction);
     }
 
     @Override
@@ -65,17 +73,26 @@ public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTrans
     }
 
     private boolean shouldDispatchAction(Action action) {
-        return  action == mQualityAction
-                || action == mPipAction;
+        return action == mQualityAction
+                || action == mPipAction
+                || action == rewindAction
+                || action == forwardAction;
     }
 
     private void dispatchAction(Action action) {
-        if (action == mPipAction && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            ((Activity) getContext()).enterPictureInPictureMode();
-        } else if (action == mQualityAction) {
+        if (mPipAction.equals(action)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                ((Activity) getContext()).enterPictureInPictureMode();
+            } else {
+                Toast.makeText(getContext(), "PIP not supported", Toast.LENGTH_SHORT).show();
+            }
+        } else if (mQualityAction.equals(action)) {
             adapter.showTrackDialog();
+        } else if (forwardAction.equals(action)) {
+            adapter.fastForward();
+        } else if (rewindAction.equals(action)) {
+            adapter.rewind();
         } else {
-            Toast.makeText(getContext(), action.toString(), Toast.LENGTH_SHORT).show();
             PlaybackControlsRow.MultiAction multiAction = (PlaybackControlsRow.MultiAction) action;
             multiAction.nextIndex();
             notifyActionChanged(multiAction);

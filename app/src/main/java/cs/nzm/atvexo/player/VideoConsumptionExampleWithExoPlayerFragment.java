@@ -22,7 +22,6 @@ import android.util.Log;
 
 import androidx.leanback.app.VideoSupportFragment;
 import androidx.leanback.app.VideoSupportFragmentGlueHost;
-import androidx.leanback.media.PlaybackGlue;
 import androidx.leanback.widget.PlaybackControlsRow;
 
 import cs.nzm.atvexo.models.MediaMetaData;
@@ -36,21 +35,6 @@ public class VideoConsumptionExampleWithExoPlayerFragment extends VideoSupportFr
     private VideoMediaPlayerGlue<ExoPlayerAdapter> mMediaPlayerGlue;
     final VideoSupportFragmentGlueHost mHost = new VideoSupportFragmentGlueHost(this);
 
-    static void playWhenReady(PlaybackGlue glue) {
-        if (glue.isPrepared()) {
-            glue.play();
-        } else {
-            glue.addPlayerCallback(new PlaybackGlue.PlayerCallback() {
-                @Override
-                public void onPreparedStateChanged(PlaybackGlue glue) {
-                    if (glue.isPrepared()) {
-                        glue.removePlayerCallback(this);
-                        glue.play();
-                    }
-                }
-            });
-        }
-    }
 
     AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener
             = new AudioManager.OnAudioFocusChangeListener() {
@@ -92,7 +76,6 @@ public class VideoConsumptionExampleWithExoPlayerFragment extends VideoSupportFr
             mMediaPlayerGlue.setSeekProvider(new PlaybackSeekMetadataDataProvider(getActivity(), URL, 5000));
         }
         mMediaPlayerGlue.playWhenPrepared();
-        playWhenReady(mMediaPlayerGlue);
         setBackgroundType(BG_LIGHT);
     }
 

@@ -42,7 +42,7 @@ import com.google.android.exoplayer2.util.Util;
 /**
  * This implementation extends the {@link PlayerAdapter} with a {@link SimpleExoPlayer}.
  */
-public class ExoPlayerAdapter extends PlayerAdapter implements Player.Listener{
+public class ExoPlayerAdapter extends PlayerAdapter implements Player.Listener {
 
     Context mContext;
     final ExoPlayer mPlayer;
@@ -211,6 +211,22 @@ public class ExoPlayerAdapter extends PlayerAdapter implements Player.Listener{
     }
 
     @Override
+    public void fastForward() {
+        if (!mInitialized) {
+            return;
+        }
+        mPlayer.seekTo(getCurrentPosition() + 10_000);
+    }
+
+    @Override
+    public void rewind() {
+        if (!mInitialized) {
+            return;
+        }
+        mPlayer.seekTo(getCurrentPosition() - 10_000);
+    }
+
+    @Override
     public long getBufferedPosition() {
         return mPlayer.getBufferedPosition();
     }
@@ -246,6 +262,7 @@ public class ExoPlayerAdapter extends PlayerAdapter implements Player.Listener{
     /**
      * Set {@link MediaSource} for {@link ExoPlayer}. An app may override this method in order
      * to use different {@link MediaSource}.
+     *
      * @param uri The url of media source
      * @return MediaSource for the player
      */
