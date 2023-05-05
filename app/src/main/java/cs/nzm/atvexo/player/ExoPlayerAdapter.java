@@ -15,6 +15,9 @@
  */
 package cs.nzm.atvexo.player;
 
+import static com.google.android.exoplayer2.C.TRACK_TYPE_VIDEO;
+
+import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
@@ -25,17 +28,22 @@ import android.view.SurfaceHolder;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.source.hls.DefaultHlsDataSourceFactory;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.ui.TrackSelectionDialogBuilder;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
@@ -45,10 +53,10 @@ import cs.nzm.atvexo.R;
 /**
  * This implementation extends the {@link PlayerAdapter} with a {@link SimpleExoPlayer}.
  */
-public class ExoPlayerAdapter extends PlayerAdapter implements ExoPlayer.EventListener{
+public class ExoPlayerAdapter extends PlayerAdapter implements Player.Listener{
 
     Context mContext;
-    final SimpleExoPlayer mPlayer;
+    final ExoPlayer mPlayer;
     SurfaceHolderGlueHost mSurfaceHolderGlueHost;
     final Runnable mRunnable = new Runnable() {
         @Override
@@ -70,9 +78,10 @@ public class ExoPlayerAdapter extends PlayerAdapter implements ExoPlayer.EventLi
      */
     public ExoPlayerAdapter(Context context) {
         mContext = context;
-        mPlayer = ExoPlayerFactory.newSimpleInstance(mContext,
-                new DefaultTrackSelector(),
-                new DefaultLoadControl());
+        mPlayer = new ExoPlayer.Builder(mContext,
+                new DefaultRenderersFactory(mContext),
+                new DefaultMediaSourceFactory(mContext)
+        ).build();
         mPlayer.addListener(this);
     }
 
@@ -246,41 +255,26 @@ public class ExoPlayerAdapter extends PlayerAdapter implements ExoPlayer.EventLi
     }
 
     /**
-     * Set {@link MediaSource} for {@link SimpleExoPlayer}. An app may override this method in order
+     * Set {@link MediaSource} for {@link ExoPlayer}. An app may override this method in order
      * to use different {@link MediaSource}.
      * @param uri The url of media source
      * @return MediaSource for the player
      */
     public MediaSource onCreateMediaSource(Uri uri) {
         String userAgent = Util.getUserAgent(mContext, "ExoPlayerAdapter");
-        return new ExtractorMediaSource(uri,
-                new DefaultDataSourceFactory(mContext, userAgent),
-                new DefaultExtractorsFactory(),
-                null,
-                null);
+        MediaItem mediaItem = MediaItem.fromUri(mMediaSourceUri);
+        return new DefaultMediaSourceFactory(mContext).createMediaSource(mediaItem);
     }
 
     private void prepareMediaForPlaying() {
         reset();
         if (mMediaSourceUri != null) {
             MediaSource mediaSource = onCreateMediaSource(mMediaSourceUri);
-            mPlayer.prepare(mediaSource);
+            mPlayer.setMediaSource(mediaSource);
+            mPlayer.prepare();
         } else {
             return;
         }
-
-        mPlayer.setAudioStreamType(mAudioStreamType);
-        mPlayer.setVideoListener(new SimpleExoPlayer.VideoListener() {
-            @Override
-            public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees,
-                    float pixelWidthHeightRatio) {
-                getCallback().onVideoSizeChanged(ExoPlayerAdapter.this, width, height);
-            }
-
-            @Override
-            public void onRenderedFirstFrame() {
-            }
-        });
         notifyBufferingStartEnd();
         getCallback().onPlayStateChanged(ExoPlayerAdapter.this);
     }
@@ -292,6 +286,11 @@ public class ExoPlayerAdapter extends PlayerAdapter implements ExoPlayer.EventLi
     @Override
     public boolean isPrepared() {
         return mInitialized && (mSurfaceHolderGlueHost == null || mHasDisplay);
+    }
+
+    public void showTrackDialog() {
+        Dialog track_selector = new TrackSelectionDialogBuilder(mContext, "Track Selector", mPlayer, TRACK_TYPE_VIDEO).build();
+        track_selector.show();
     }
 
     /**
@@ -314,10 +313,10 @@ public class ExoPlayerAdapter extends PlayerAdapter implements ExoPlayer.EventLi
         }
     }
 
-    // ExoPlayer Event Listeners
 
     @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+    public void onPlaybackStateChanged(int playbackState) {
+        Player.Listener.super.onPlaybackStateChanged(playbackState);
         mBufferingStart = false;
         if (playbackState == ExoPlayer.STATE_READY && !mInitialized) {
             mInitialized = true;
@@ -331,29 +330,5 @@ public class ExoPlayerAdapter extends PlayerAdapter implements ExoPlayer.EventLi
             getCallback().onPlayCompleted(ExoPlayerAdapter.this);
         }
         notifyBufferingStartEnd();
-    }
-
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
-        getCallback().onError(ExoPlayerAdapter.this, error.type,
-                mContext.getString(R.string.lb_media_player_error,
-                        error.type,
-                        error.rendererIndex));
-    }
-
-    @Override
-    public void onLoadingChanged(boolean isLoading) {
-    }
-
-    @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest) {
-    }
-
-    @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-    }
-
-    @Override
-    public void onPositionDiscontinuity() {
     }
 }

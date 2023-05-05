@@ -32,13 +32,15 @@ public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTrans
 
     private PlaybackControlsRow.RepeatAction mRepeatAction;
     private PlaybackControlsRow.PictureInPictureAction mPipAction;
-    private PlaybackControlsRow.HighQualityAction mQualityAction;
+    private PlaybackControlsRow.MoreActions mQualityAction;
     private PlaybackControlsRow.ClosedCaptioningAction mClosedCaptioningAction;
+    private ExoPlayerAdapter adapter;
 
     public VideoMediaPlayerGlue(Activity context, T impl) {
         super(context, impl);
+        adapter = (ExoPlayerAdapter) impl;
         mClosedCaptioningAction = new PlaybackControlsRow.ClosedCaptioningAction(context);
-        mQualityAction = new PlaybackControlsRow.HighQualityAction(context);
+        mQualityAction = new PlaybackControlsRow.MoreActions(context);
         mRepeatAction = new PlaybackControlsRow.RepeatAction(context);
         mPipAction = new PlaybackControlsRow.PictureInPictureAction(context);
     }
@@ -75,6 +77,8 @@ public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTrans
     private void dispatchAction(Action action) {
         if (action == mPipAction) {
             ((Activity) getContext()).enterPictureInPictureMode();
+        } else if (action == mQualityAction) {
+            adapter.showTrackDialog();
         } else {
             Toast.makeText(getContext(), action.toString(), Toast.LENGTH_SHORT).show();
             PlaybackControlsRow.MultiAction multiAction = (PlaybackControlsRow.MultiAction) action;

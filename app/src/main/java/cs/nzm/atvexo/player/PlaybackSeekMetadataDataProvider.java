@@ -9,6 +9,7 @@ import android.util.SparseArray;
 
 import androidx.leanback.widget.PlaybackSeekDataProvider;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class PlaybackSeekMetadataDataProvider extends PlaybackSeekDataProvider {
@@ -83,7 +84,11 @@ public class PlaybackSeekMetadataDataProvider extends PlaybackSeekDataProvider {
             Log.d("SeekProvider", "position: " + position);
 
             Bitmap thumbnail = retriever.getFrameAtTime(position * 1000);
-            retriever.release();
+            try {
+                retriever.release();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return thumbnail;
         }
 
