@@ -16,6 +16,7 @@
 package cs.nzm.atvexo.player;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Handler;
 import androidx.leanback.media.PlaybackTransportControlGlue;
 import androidx.leanback.media.PlayerAdapter;
@@ -30,18 +31,14 @@ import android.widget.Toast;
  */
 public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTransportControlGlue<T> {
 
-    private PlaybackControlsRow.RepeatAction mRepeatAction;
     private PlaybackControlsRow.PictureInPictureAction mPipAction;
     private PlaybackControlsRow.MoreActions mQualityAction;
-    private PlaybackControlsRow.ClosedCaptioningAction mClosedCaptioningAction;
     private ExoPlayerAdapter adapter;
 
     public VideoMediaPlayerGlue(Activity context, T impl) {
         super(context, impl);
         adapter = (ExoPlayerAdapter) impl;
-        mClosedCaptioningAction = new PlaybackControlsRow.ClosedCaptioningAction(context);
         mQualityAction = new PlaybackControlsRow.MoreActions(context);
-        mRepeatAction = new PlaybackControlsRow.RepeatAction(context);
         mPipAction = new PlaybackControlsRow.PictureInPictureAction(context);
     }
 
@@ -56,8 +53,6 @@ public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTrans
     @Override
     protected void onCreatePrimaryActions(ArrayObjectAdapter adapter) {
         super.onCreatePrimaryActions(adapter);
-        adapter.add(mRepeatAction);
-        adapter.add(mClosedCaptioningAction);
     }
 
     @Override
@@ -70,12 +65,12 @@ public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTrans
     }
 
     private boolean shouldDispatchAction(Action action) {
-        return action == mRepeatAction || action == mQualityAction
-                || action == mPipAction || action == mClosedCaptioningAction;
+        return  action == mQualityAction
+                || action == mPipAction;
     }
 
     private void dispatchAction(Action action) {
-        if (action == mPipAction) {
+        if (action == mPipAction && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             ((Activity) getContext()).enterPictureInPictureMode();
         } else if (action == mQualityAction) {
             adapter.showTrackDialog();
@@ -123,21 +118,6 @@ public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTrans
     @Override
     protected void onPlayCompleted() {
         super.onPlayCompleted();
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mRepeatAction.getIndex() != PlaybackControlsRow.RepeatAction.NONE) {
-                    play();
-                }
-            }
-        });
     }
 
-    public void setMode(int mode) {
-        mRepeatAction.setIndex(mode);
-        if (getPrimaryActionsAdapter() == null) {
-            return;
-        }
-        notifyActionChanged(mRepeatAction);
-    }
 }

@@ -16,7 +16,11 @@ package cs.nzm.atvexo.models;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -27,20 +31,104 @@ import java.net.URISyntaxException;
  * This is a generic example of a custom data object, containing info we might want to keep with
  * each card on the home screen
  */
-public class Card {
+public class Card implements Parcelable {
 
-    @SerializedName("title") private String mTitle = "";
-    @SerializedName("description") private String mDescription = "";
-    @SerializedName("extraText") private String mExtraText = "";
-    @SerializedName("card") private String mImageUrl;
-    @SerializedName("footerColor") private String mFooterColor = null;
-    @SerializedName("selectedColor") private String mSelectedColor = null;
-    @SerializedName("localImageResource") private String mLocalImageResource = null;
-    @SerializedName("footerIconLocalImageResource") private String mFooterResource = null;
-    @SerializedName("type") private Card.Type mType;
-    @SerializedName("id") private int mId;
-    @SerializedName("width") private int mWidth;
-    @SerializedName("height") private int mHeight;
+    @SerializedName("title")
+    private String mTitle = "";
+    @SerializedName("description")
+    private String mDescription = "";
+    @SerializedName("extraText")
+    private String mExtraText = "";
+    @SerializedName("card")
+    private String mImageUrl;
+    @SerializedName("footerColor")
+    private String mFooterColor = null;
+    @SerializedName("selectedColor")
+    private String mSelectedColor = null;
+    @SerializedName("localImageResource")
+    private String mLocalImageResource = null;
+    @SerializedName("footerIconLocalImageResource")
+    private String mFooterResource = null;
+    @SerializedName("type")
+    private Card.Type mType;
+    @SerializedName("id")
+    private int mId;
+    @SerializedName("width")
+    private int mWidth;
+    @SerializedName("height")
+    private int mHeight;
+    @SerializedName("videoUrl")
+    private String mVideoUrl;
+    @SerializedName("isLive")
+    private boolean isLive;
+
+
+    protected Card(Parcel in) {
+        mTitle = in.readString();
+        mDescription = in.readString();
+        mExtraText = in.readString();
+        mImageUrl = in.readString();
+        mFooterColor = in.readString();
+        mSelectedColor = in.readString();
+        mLocalImageResource = in.readString();
+        mFooterResource = in.readString();
+        mId = in.readInt();
+        mWidth = in.readInt();
+        mHeight = in.readInt();
+        mVideoUrl = in.readString();
+        isLive = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mTitle);
+        dest.writeString(mDescription);
+        dest.writeString(mExtraText);
+        dest.writeString(mImageUrl);
+        dest.writeString(mFooterColor);
+        dest.writeString(mSelectedColor);
+        dest.writeString(mLocalImageResource);
+        dest.writeString(mFooterResource);
+        dest.writeInt(mId);
+        dest.writeInt(mWidth);
+        dest.writeInt(mHeight);
+        dest.writeString(mVideoUrl);
+        dest.writeByte((byte) (isLive ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Card> CREATOR = new Creator<Card>() {
+        @Override
+        public Card createFromParcel(Parcel in) {
+            return new Card(in);
+        }
+
+        @Override
+        public Card[] newArray(int size) {
+            return new Card[size];
+        }
+    };
+
+    public String getmVideoUrl() {
+        return mVideoUrl;
+    }
+
+    public void setmVideoUrl(String mVideoUrl) {
+        this.mVideoUrl = mVideoUrl;
+    }
+
+    public boolean isLive() {
+        return isLive;
+    }
+
+    public void setLive(boolean live) {
+        isLive = live;
+    }
+
 
     public String getTitle() {
         return mTitle;
@@ -153,7 +241,7 @@ public class Card {
 
     public int getLocalImageResourceId(Context context) {
         return context.getResources().getIdentifier(getLocalImageResourceName(), "drawable",
-                                                    context.getPackageName());
+                context.getPackageName());
     }
 
     public String getLocalImageResourceName() {
@@ -163,6 +251,7 @@ public class Card {
     public String getFooterLocalImageResourceName() {
         return mFooterResource;
     }
+
 
     public enum Type {
 

@@ -5,100 +5,56 @@
       {
         "id": 0,
         "type": "DEFAULT",
-        "title": "Card Examples",
+        "title": "Clear hls - Angel one",
         "localImageResource": "thumbnail_example_music_consumption",
-        "description": "Showcase of various card design and layouts"
+        "description": "Showcase of clear hls playback",
+        "videoUrl": "https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/hls.m3u8",
+        "isLive": false
       },
       {
         "id": 1,
         "type": "DEFAULT",
-        "title": "Page/Row fragment Examples",
-        "localImageResource": "thumbnail_example_video_consumption",
-        "description": "Showcase usage of page/rows fragment"
+        "title": "Direct hls playback",
+        "localImageResource": "thumbnail_example_music_consumption",
+        "description": "Showcase of direct hls playback",
+        "videoUrl": "https://video.bunnycdn.com/play/112697/9c53dea5-510a-4c5d-9682-a82cf3da0c3c",
+        "isLive": false
       },
       {
         "id": 2,
         "type": "DEFAULT",
-        "title": "Image Grid Examples",
-        "localImageResource": "thumbnail_example_music_consumption",
-        "description": "Showcase of various images in a vertical grid"
+        "title": "HLS m3u8 vod playlist",
+        "localImageResource": "thumbnail_example_video_consumption",
+        "description": "Showcase usage of HLS m3u8 vod playlist",
+        "videoUrl": "https://vz-fa6a66b7-f16.b-cdn.net/9c53dea5-510a-4c5d-9682-a82cf3da0c3c/playlist.m3u8",
+        "isLive": false
       },
       {
         "id": 3,
         "type": "DEFAULT",
-        "title": "Video Grid Examples",
-        "localImageResource": "thumbnail_example_video_consumption",
-        "description": "Showcase of various videos in a vertical grid"
+        "title": "Live hls example1",
+        "localImageResource": "thumbnail_example_music_consumption",
+        "description": "Showcase of Live hls example1",
+        "videoUrl": "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
+        "isLive": true
       },
       {
         "id": 4,
         "type": "DEFAULT",
-        "title": "Detail Examples",
-        "localImageResource": "thumbnail_example_music_consumption",
-        "description": "Showcase of various card design and layouts"
+        "title": "Live hls example2",
+        "localImageResource": "thumbnail_example_video_consumption",
+        "description": "Showcase of Live hls example2",
+        "videoUrl": "https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8",
+        "isLive": true
       },
       {
         "id": 5,
         "type": "DEFAULT",
-        "title": "Detail Examples with Video Background",
+        "title": "Clear mp4: Dizzy",
         "localImageResource": "thumbnail_example_video_consumption",
-        "description": "Showcase of various card design and layouts"
-      },
-      {
-        "id": 6,
-        "type": "DEFAULT",
-        "title": "Video consumption Examples",
-        "localImageResource": "thumbnail_example_video_consumption",
-        "description": "Showcase of various card design and layouts"
-      },
-      {
-        "id": 7,
-        "type": "DEFAULT",
-        "title": "Video consumption Examples with ExoPlayer",
-        "localImageResource": "thumbnail_example_video_consumption",
-        "description": "Video with ExoPlayer"
-      },
-      {
-        "id": 8,
-        "type": "DEFAULT",
-        "title": "Music consumption Examples",
-        "localImageResource": "thumbnail_example_music_consumption",
-        "description": "Showcase of various card design and layouts"
-      },
-      {
-        "id": 9,
-        "type": "DEFAULT",
-        "title": "Wizard Examples",
-        "localImageResource": "thumbnail_example_video_consumption",
-        "description": "Showcase of various card design and layouts"
-      },
-      {
-        "id": 10,
-        "type": "DEFAULT",
-        "title": "Settings Examples",
-        "localImageResource": "thumbnail_example_music_consumption",
-        "description": "Showcase of various card design and layouts"
-      },
-      {
-        "id": 11,
-        "type": "DEFAULT",
-        "title": "Dialog Examples",
-        "localImageResource": "thumbnail_example_video_consumption",
-        "description": "Showcase of various card design and layouts"
-      },
-      {
-        "id": 12,
-        "type": "DEFAULT",
-        "title": "Row Example",
-        "localImageResource": "thumbnail_example_music_consumption",
-        "description": "Showcase of how to publish rows from your own app"
-      },
-      {
-        "id": 13,
-        "type": "DEFAULT",
-        "title": "LiveData Example",
-        "localImageResource": "thumbnail_example_video_consumption",
-        "description": "live data and room"
+        "description": "Showcase of MP4",
+        "videoUrl": "https://html5demos.com/assets/dizzy.mp4",
+        "isLive": false
       }
     ]
   }

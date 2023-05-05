@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class PlaybackSeekMetadataDataProvider extends PlaybackSeekDataProvider {
     private final Context mContext;
     private final String mVideoUrl;
-    private final long[] mSeekPositions;
+    private long[] mSeekPositions= new long[0];
     private final SparseArray<LoadBitmapAsyncTask> mTasks = new SparseArray<>();
 
     public PlaybackSeekMetadataDataProvider(Context context,
@@ -25,15 +25,19 @@ public class PlaybackSeekMetadataDataProvider extends PlaybackSeekDataProvider {
         mVideoUrl = videoUrl;
 
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(mVideoUrl, new HashMap<>());
+        try {
+            retriever.setDataSource(mVideoUrl, new HashMap<>());
 
-        long duration = Long.parseLong(
-                retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+            long duration = Long.parseLong(
+                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
 
-        int size = (int) (duration / interval) + 1;
-        mSeekPositions = new long[size];
-        for (int i = 0; i < size; i++) {
-            mSeekPositions[i] = i * interval;
+            int size = (int) (duration / interval) + 1;
+            mSeekPositions = new long[size];
+            for (int i = 0; i < size; i++) {
+                mSeekPositions[i] = i * interval;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -15,6 +15,7 @@
 package cs.nzm.atvexo;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.leanback.app.BrowseSupportFragment;
@@ -31,6 +32,7 @@ import com.google.gson.Gson;
 
 import cs.nzm.atvexo.models.Card;
 import cs.nzm.atvexo.models.CardRow;
+import cs.nzm.atvexo.models.MediaMetaData;
 import cs.nzm.atvexo.player.VideoExampleWithExoPlayerActivity;
 import cs.nzm.atvexo.utils.Utils;
 
@@ -90,12 +92,17 @@ public class MainFragment extends BrowseSupportFragment {
         @Override
         public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item,
                                   RowPresenter.ViewHolder rowViewHolder, Row row) {
-            Intent intent = null;
+            Intent intent;
             Card card = (Card) item;
+            MediaMetaData mediaMetaData = new MediaMetaData(
+                    Uri.parse(card.getmVideoUrl()), card.getmVideoUrl(),
+                    card.getTitle(), card.getDescription(), null, 0, null, card.isLive()
+            );
             intent = new Intent(getActivity().getBaseContext(),
                     VideoExampleWithExoPlayerActivity.class);
             Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity())
                     .toBundle();
+            intent.putExtra(VideoExampleWithExoPlayerActivity.TAG, mediaMetaData);
             startActivity(intent, bundle);
         }
     }

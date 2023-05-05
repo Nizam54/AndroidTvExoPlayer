@@ -31,10 +31,11 @@ public class MediaMetaData implements Parcelable{
     private String mMediaAlbumName;
     private int mMediaAlbumArtResId;
     private String mMediaAlbumArtUrl;
+    private boolean isLive;
 
-    MediaMetaData(Uri mediaSourceUri, String mediaSourcePath, String mediaTitle,
+    public MediaMetaData(Uri mediaSourceUri, String mediaSourcePath, String mediaTitle,
                   String mediaArtistName, String mediaAlbumName, int mediaAlbumArtResId,
-                  String mediaAlbumArtUrl) {
+                  String mediaAlbumArtUrl, boolean isLive) {
         mMediaSourceUri = mediaSourceUri;
         mMediaSourcePath = mediaSourcePath;
         mMediaTitle = mediaTitle;
@@ -42,21 +43,60 @@ public class MediaMetaData implements Parcelable{
         mMediaAlbumName = mediaAlbumName;
         mMediaAlbumArtResId = mediaAlbumArtResId;
         mMediaAlbumArtUrl = mediaAlbumArtUrl;
+        this.isLive = isLive;
     }
 
     public MediaMetaData() {
     }
 
-    public MediaMetaData(Parcel in) {
-        mMediaSourceUri = in.readParcelable(null);
+
+    protected MediaMetaData(Parcel in) {
+        mMediaSourceUri = in.readParcelable(Uri.class.getClassLoader());
         mMediaSourcePath = in.readString();
         mMediaTitle = in.readString();
         mMediaArtistName = in.readString();
         mMediaAlbumName = in.readString();
         mMediaAlbumArtResId = in.readInt();
         mMediaAlbumArtUrl = in.readString();
+        isLive = in.readByte() != 0;
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(mMediaSourceUri, flags);
+        dest.writeString(mMediaSourcePath);
+        dest.writeString(mMediaTitle);
+        dest.writeString(mMediaArtistName);
+        dest.writeString(mMediaAlbumName);
+        dest.writeInt(mMediaAlbumArtResId);
+        dest.writeString(mMediaAlbumArtUrl);
+        dest.writeByte((byte) (isLive ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<MediaMetaData> CREATOR = new Creator<MediaMetaData>() {
+        @Override
+        public MediaMetaData createFromParcel(Parcel in) {
+            return new MediaMetaData(in);
+        }
+
+        @Override
+        public MediaMetaData[] newArray(int size) {
+            return new MediaMetaData[size];
+        }
+    };
+
+    public boolean isLive() {
+        return isLive;
+    }
+
+    public void setLive(boolean live) {
+        isLive = live;
+    }
 
     public Uri getMediaSourceUri() {
         return mMediaSourceUri;
@@ -115,32 +155,6 @@ public class MediaMetaData implements Parcelable{
         mMediaAlbumArtUrl = mediaAlbumArtUrl;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(mMediaSourceUri, flags);
-        dest.writeString(mMediaSourcePath);
-        dest.writeString(mMediaTitle);
-        dest.writeString(mMediaArtistName);
-        dest.writeString(mMediaAlbumName);
-        dest.writeInt(mMediaAlbumArtResId);
-        dest.writeString(mMediaAlbumArtUrl);
-    }
-
-    public static final Creator<MediaMetaData> CREATOR = new Creator<MediaMetaData>() {
-        @Override
-        public MediaMetaData createFromParcel(Parcel parcel) {
-            return new MediaMetaData(parcel);
-        }
-
-        @Override
-        public MediaMetaData[] newArray(int size) {
-            return new MediaMetaData[size];
-        }
-    };
 
 }

@@ -25,7 +25,6 @@ import androidx.leanback.app.VideoSupportFragmentGlueHost;
 import androidx.leanback.media.PlaybackGlue;
 import androidx.leanback.widget.PlaybackControlsRow;
 
-import cs.nzm.atvexo.MainActivity;
 import cs.nzm.atvexo.models.MediaMetaData;
 
 
@@ -76,12 +75,16 @@ public class VideoConsumptionExampleWithExoPlayerFragment extends VideoSupportFr
         }
 
         MediaMetaData intentMetaData = getActivity().getIntent().getParcelableExtra(
-                MainActivity.TAG);
+                VideoExampleWithExoPlayerActivity.TAG);
         if (intentMetaData != null) {
             mMediaPlayerGlue.setTitle(intentMetaData.getMediaTitle());
             mMediaPlayerGlue.setSubtitle(intentMetaData.getMediaArtistName());
             mMediaPlayerGlue.getPlayerAdapter().setDataSource(
                     Uri.parse(intentMetaData.getMediaSourcePath()));
+            if (intentMetaData.isLive()) {
+                mMediaPlayerGlue.setSeekProvider(null);
+                mMediaPlayerGlue.setSeekEnabled(false);
+            }
         } else {
             mMediaPlayerGlue.setTitle("Diving with Sharks");
             mMediaPlayerGlue.setSubtitle("A Googler");
