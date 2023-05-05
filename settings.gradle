@@ -14,5 +14,5 @@ dependencyResolutionManagement {
         jcenter()
     }
 }
-rootProject.name = "ShivyogTV"
+rootProject.name = "ExoTV"
 include ':app'
