@@ -46,15 +46,6 @@
         "description": "Showcase of Live hls example2",
         "videoUrl": "https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8",
         "isLive": true
-      },
-      {
-        "id": 5,
-        "type": "DEFAULT",
-        "title": "Clear mp4: Dizzy",
-        "localImageResource": "thumbnail_example_video_consumption",
-        "description": "Showcase of MP4",
-        "videoUrl": "https://html5demos.com/assets/dizzy.mp4",
-        "isLive": false
       }
     ]
   }

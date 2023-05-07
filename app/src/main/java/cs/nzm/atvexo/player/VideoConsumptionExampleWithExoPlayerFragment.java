@@ -74,12 +74,14 @@ public class VideoConsumptionExampleWithExoPlayerFragment extends VideoSupportFr
             if (intentMetaData.isLive()) {
                 mMediaPlayerGlue.setSeekProvider(null);
                 mMediaPlayerGlue.setSeekEnabled(false);
+            } else {
+                mMediaPlayerGlue.setSeekProvider(new PlaybackSeekMetadataDataProvider(getActivity(), intentMetaData.getMediaSourcePath(), 10000));
             }
         } else {
             mMediaPlayerGlue.setTitle("Diving with Sharks");
             mMediaPlayerGlue.setSubtitle("A Googler");
             mMediaPlayerGlue.getPlayerAdapter().setDataSource(Uri.parse(URL));
-            mMediaPlayerGlue.setSeekProvider(new PlaybackSeekMetadataDataProvider(getActivity(), URL, 5000));
+            mMediaPlayerGlue.setSeekProvider(new PlaybackSeekMetadataDataProvider(getActivity(), URL, 10000));
         }
         mMediaPlayerGlue.playWhenPrepared();
         setBackgroundType(BG_LIGHT);
