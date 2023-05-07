@@ -37,6 +37,7 @@ public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTrans
     private PlaybackControlsRow.RewindAction rewindAction;
     private PlaybackControlsRow.PictureInPictureAction mPipAction;
     private PlaybackControlsRow.MoreActions mQualityAction;
+    private PlaybackControlsRow.ClosedCaptioningAction subtitleAction;
     private ExoPlayerAdapter adapter;
 
     public VideoMediaPlayerGlue(Activity context, T impl) {
@@ -46,14 +47,17 @@ public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTrans
         rewindAction = new PlaybackControlsRow.RewindAction(context);
         mQualityAction = new PlaybackControlsRow.MoreActions(context);
         mPipAction = new PlaybackControlsRow.PictureInPictureAction(context);
+        subtitleAction = new PlaybackControlsRow.ClosedCaptioningAction(context);
+        subtitleAction.setIndex(PlaybackControlsRow.ClosedCaptioningAction.INDEX_ON);
     }
 
     @Override
     protected void onCreateSecondaryActions(ArrayObjectAdapter adapter) {
-        adapter.add(mQualityAction);
+        adapter.add(subtitleAction);
         if (android.os.Build.VERSION.SDK_INT > 23) {
             adapter.add(mPipAction);
         }
+        adapter.add(mQualityAction);
     }
 
     @Override
@@ -76,7 +80,8 @@ public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTrans
         return action == mQualityAction
                 || action == mPipAction
                 || action == rewindAction
-                || action == forwardAction;
+                || action == forwardAction
+                || action == subtitleAction;
     }
 
     private void dispatchAction(Action action) {
@@ -93,6 +98,9 @@ public class VideoMediaPlayerGlue<T extends PlayerAdapter> extends PlaybackTrans
         } else if (rewindAction.equals(action)) {
             adapter.rewind();
         } else {
+            if (subtitleAction.equals(action)) {
+                adapter.toggleSubs();
+            }
             PlaybackControlsRow.MultiAction multiAction = (PlaybackControlsRow.MultiAction) action;
             multiAction.nextIndex();
             notifyActionChanged(multiAction);

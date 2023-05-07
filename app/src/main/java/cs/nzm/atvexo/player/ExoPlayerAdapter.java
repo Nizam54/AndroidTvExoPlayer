@@ -22,6 +22,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
 import android.view.SurfaceHolder;
+import android.view.View;
 
 import androidx.leanback.media.PlaybackGlueHost;
 import androidx.leanback.media.PlayerAdapter;
@@ -35,6 +36,8 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.text.CueGroup;
+import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.ui.TrackSelectionDialogBuilder;
 import com.google.android.exoplayer2.util.Util;
 
@@ -46,6 +49,7 @@ public class ExoPlayerAdapter extends PlayerAdapter implements Player.Listener {
 
     Context mContext;
     final ExoPlayer mPlayer;
+    SubtitleView subtitleView;
     SurfaceHolderGlueHost mSurfaceHolderGlueHost;
     final Runnable mRunnable = new Runnable() {
         @Override
@@ -299,6 +303,16 @@ public class ExoPlayerAdapter extends PlayerAdapter implements Player.Listener {
         track_selector.show();
     }
 
+    public void toggleSubs() {
+        if (subtitleView != null) {
+            subtitleView.setVisibility(subtitleView.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    public void setSubtitleView(SubtitleView subtitleView) {
+        this.subtitleView = subtitleView;
+    }
+
     /**
      * Implements {@link SurfaceHolder.Callback} that can then be set on the
      * {@link PlaybackGlueHost}.
@@ -319,6 +333,13 @@ public class ExoPlayerAdapter extends PlayerAdapter implements Player.Listener {
         }
     }
 
+    @Override
+    public void onCues(CueGroup cueGroup) {
+        Player.Listener.super.onCues(cueGroup);
+        if (subtitleView != null) {
+            subtitleView.setCues(cueGroup.cues);
+        }
+    }
 
     @Override
     public void onPlaybackStateChanged(int playbackState) {

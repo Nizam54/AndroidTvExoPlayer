@@ -19,11 +19,17 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.leanback.app.VideoSupportFragment;
 import androidx.leanback.app.VideoSupportFragmentGlueHost;
 import androidx.leanback.widget.PlaybackControlsRow;
 
+import com.google.android.exoplayer2.ui.SubtitleView;
+
+import cs.nzm.atvexo.R;
 import cs.nzm.atvexo.models.MediaMetaData;
 
 
@@ -42,12 +48,12 @@ public class VideoConsumptionExampleWithExoPlayerFragment extends VideoSupportFr
         public void onAudioFocusChange(int state) {
         }
     };
+    private ExoPlayerAdapter playerAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ExoPlayerAdapter playerAdapter = new ExoPlayerAdapter(getActivity());
+        playerAdapter = new ExoPlayerAdapter(getActivity());
         playerAdapter.setRepeatAction(PlaybackControlsRow.RepeatAction.INDEX_NONE);
         mMediaPlayerGlue = new VideoMediaPlayerGlue<>(getActivity(), playerAdapter);
         mMediaPlayerGlue.setHost(mHost);
@@ -77,6 +83,16 @@ public class VideoConsumptionExampleWithExoPlayerFragment extends VideoSupportFr
         }
         mMediaPlayerGlue.playWhenPrepared();
         setBackgroundType(BG_LIGHT);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        SubtitleView subtitleView = view.findViewById(R.id.leanback_subtitles);
+        if (playerAdapter != null) {
+            playerAdapter.setSubtitleView(subtitleView);
+        }
+        return view;
     }
 
     @Override
