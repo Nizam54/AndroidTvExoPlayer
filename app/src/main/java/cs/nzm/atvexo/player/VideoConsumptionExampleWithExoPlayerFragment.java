@@ -35,8 +35,7 @@ import cs.nzm.atvexo.models.MediaMetaData;
 
 public class VideoConsumptionExampleWithExoPlayerFragment extends VideoSupportFragment {
 
-    private static final String URL = "https://storage.googleapis.com/android-tv/Sample videos/"
-            + "April Fool's 2013/Explore Treasure Mode with Google Maps.mp4";
+    private static final String URL = "https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/hls.m3u8";
     public static final String TAG = "VideoConsExoPlayer";
     private VideoMediaPlayerGlue<ExoPlayerAdapter> mMediaPlayerGlue;
     final VideoSupportFragmentGlueHost mHost = new VideoSupportFragmentGlueHost(this);

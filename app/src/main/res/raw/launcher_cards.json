@@ -12,24 +12,6 @@
         "isLive": false
       },
       {
-        "id": 1,
-        "type": "DEFAULT",
-        "title": "Direct hls playback",
-        "localImageResource": "thumbnail_example_music_consumption",
-        "description": "Showcase of direct hls playback",
-        "videoUrl": "https://video.bunnycdn.com/play/112697/9c53dea5-510a-4c5d-9682-a82cf3da0c3c",
-        "isLive": false
-      },
-      {
-        "id": 2,
-        "type": "DEFAULT",
-        "title": "HLS m3u8 vod playlist",
-        "localImageResource": "thumbnail_example_video_consumption",
-        "description": "Showcase usage of HLS m3u8 vod playlist",
-        "videoUrl": "https://vz-fa6a66b7-f16.b-cdn.net/9c53dea5-510a-4c5d-9682-a82cf3da0c3c/playlist.m3u8",
-        "isLive": false
-      },
-      {
         "id": 3,
         "type": "DEFAULT",
         "title": "Live hls example1",
